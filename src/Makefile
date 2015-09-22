@@ -2,8 +2,14 @@
 
 .PHONY: run
 
-run: Lepton_Data_Sender
-	./Lepton_Data_Sender $(LEPTON_VISUALIZER_IP)
+# run: Lepton_Data_Sender
+# 	./Lepton_Data_Sender $(LEPTON_VISUALIZER_IP)
+
+run: Person_Finder
+	./Person_Finder
+
+Person_Finder: Person_Finder.cpp
+	g++ -std=c++0x -o Person_Finder Person_Finder.cpp -lopencv_core -lopencv_imgproc
 
 Lepton_Data_Sender: Lepton_Data_Sender.cpp
 	g++ -o Lepton_Data_Sender Lepton_Data_Sender.cpp -L/usr/local/lib/arm-linux-gnueabihf/ -lmraa
