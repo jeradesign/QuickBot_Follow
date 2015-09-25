@@ -11,43 +11,45 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-const int morph_size = 3;
-const float minDeltaX = 0.05;
-const float minDeltaY = 0.05;
+static const int morph_size = 3;
+static const float minDeltaX = 0.05;
+static const float minDeltaY = 0.05;
+
+static const int min_temp = 8000;
+static const int max_temp = 8300;
 
 using namespace std;
 using namespace cv;
 
 bool _inited;
 
-void findPerson(cv::Mat mat1, cv::Mat ycbcr) {
-  cv::Mat equalized;
+Mat findPerson(Mat mat1) {
+  Mat equalized;
     
   double min, max;
     
   MatIterator_<uint16_t> it, end;
   for( it = mat1.begin<uint16_t>(), end = mat1.end<uint16_t>(); it != end; ++it) {
-    if (*it < 13500) {
-      *it = 13500;
+    if (*it < min_temp) {
+        *it = min_temp;
+    } else if (*it > max_temp) {
+        *it = min_temp;
     }
   }
     
-  cv::minMaxLoc(mat1, &min, &max);
-  fprintf(stderr, "min: %f max: %f", min, max);
+  // minMaxLoc(mat1, &min, &max);
+  // fprintf(stderr, "min: %f max: %f\n", min, max);
   normalize(mat1, equalized, 0, 16384, cv::NORM_MINMAX);
   equalized.convertTo(equalized, CV_8UC1, 0.015625);
+
+  // fprintf(stderr, "equalized.rows = %d, equalized.cols = %d\n", equalized.rows, equalized.cols);
+  Mat rgbMat(equalized.rows, equalized.cols, CV_8UC3);
+  cvtColor(equalized, rgbMat, CV_GRAY2RGB);
     
-  Mat ycrcb(ycbcr.rows, ycbcr.cols, CV_8UC3);
-    
-  int from_to[] = { 0,0, 1,2, 2,1 };
-  cv::mixChannels(&ycbcr, 1, &ycrcb, 1, from_to, 3);
-  Mat rgbMat;
-  cvtColor(ycrcb, rgbMat, CV_YCrCb2RGB);
-    
+#if 1
   Mat mask;
-  resize(equalized, mask, rgbMat.size());
     
-  threshold(mask, mask, 32, 255, THRESH_BINARY);
+  threshold(equalized, mask, 200, 255, THRESH_BINARY);
     
   vector<vector<cv::Point> > contours;
   findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
@@ -60,7 +62,7 @@ void findPerson(cv::Mat mat1, cv::Mat ycbcr) {
       biggestContour = contour;
     }
   }
-  fprintf(stderr, "Biggest area %d", biggestArea);
+  // fprintf(stderr, "Biggest area %d\n", biggestArea);
   if (biggestArea > 0) {
     Moments mu = moments(biggestContour);
     int x = mu.m10/mu.m00;
@@ -85,13 +87,14 @@ void findPerson(cv::Mat mat1, cv::Mat ycbcr) {
       deltaY = 0;
     }
         
-    fprintf(stderr, "%f, %f", deltaX, deltaY);
+    // fprintf(stderr, "%f, %f\n", deltaX, deltaY);
     // [_galileo panBy:deltaY * 180];
     // [_galileo tiltBy:deltaX * 180];
   } else {
     // [_galileo panBy:0];
     // [_galileo tiltBy:0];
   }
-    
-  // [self matReady:rgbMat];
+#endif
+
+  return rgbMat;
 }
