@@ -16,7 +16,10 @@ static const float minDeltaX = 0.05;
 static const float minDeltaY = 0.05;
 
 static const int min_temp = 8000;
-static const int max_temp = 8300;
+static const int max_temp = 8500;
+static const int human_temp = 8250;
+
+static const int min_area = 100;
 
 using namespace std;
 using namespace cv;
@@ -37,11 +40,12 @@ Mat findPerson(Mat mat1) {
         }
     }
     
-    // minMaxLoc(mat1, &min, &max);
-    // fprintf(stderr, "min: %f max: %f\n", min, max);
-    normalize(mat1, equalized, 0, 16384, cv::NORM_MINMAX);
-    equalized.convertTo(equalized, CV_8UC1, 0.015625);
-
+    double alpha = 255.0 / (max_temp - min_temp);
+    double beta = alpha * -min_temp;
+    
+    // fprintf(stderr, "min_temp = %f, max_temp = %f\n", alpha * min_temp + beta, alpha * max_temp + beta);
+    mat1.convertTo(equalized, CV_8UC1, alpha, beta);
+    
     // fprintf(stderr, "equalized.rows = %d, equalized.cols = %d\n", equalized.rows, equalized.cols);
     Mat rgbMat(equalized.rows, equalized.cols, CV_8UC3);
     cvtColor(equalized, rgbMat, CV_GRAY2RGB);
@@ -49,8 +53,11 @@ Mat findPerson(Mat mat1) {
 #if 1
     Mat mask;
     
-    threshold(equalized, mask, 200, 255, THRESH_BINARY);
+    // adaptiveThreshold(equalized, mask, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 0);
+    threshold(equalized, mask, alpha * human_temp + beta, 255, THRESH_BINARY + THRESH_OTSU);
     
+    // cvtColor(mask, rgbMat, CV_GRAY2RGB);
+
     vector<vector<cv::Point> > contours;
     findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
     vector<cv::Point> biggestContour;
@@ -63,7 +70,7 @@ Mat findPerson(Mat mat1) {
         }
     }
     // fprintf(stderr, "Biggest area %d\n", biggestArea);
-    if (biggestArea > 0) {
+    if (biggestArea > min_area) {
         Moments mu = moments(biggestContour);
         int x = mu.m10/mu.m00;
         int y = mu.m01/mu.m00;
