@@ -20,6 +20,7 @@ static const int max_temp = 8500;
 static const int human_temp = 8250;
 
 static const int min_area = 100;
+static const int max_area = 1000;
 
 using namespace std;
 using namespace cv;
@@ -70,7 +71,7 @@ Mat findPerson(Mat mat1) {
         }
     }
     // fprintf(stderr, "Biggest area %d\n", biggestArea);
-    if (biggestArea > min_area) {
+    if (biggestArea > min_area && biggestArea < max_area) {
         Moments mu = moments(biggestContour);
         int x = mu.m10/mu.m00;
         int y = mu.m01/mu.m00;
