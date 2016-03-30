@@ -11,6 +11,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "Calibration.h"
+
 static const int morph_size = 3;
 static const float minDeltaX = 0.05;
 static const float minDeltaY = 0.05;
@@ -28,6 +30,8 @@ using namespace cv;
 bool _inited;
 
 Mat findPerson(Mat mat1) {
+    calibrate(mat1);
+    
     Mat equalized;
     
     double min, max;
