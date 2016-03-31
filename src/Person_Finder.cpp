@@ -12,6 +12,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "Calibration.h"
+#include "Person_Finder.h"
 
 static const int morph_size = 3;
 static const float minDeltaX = 0.05;
@@ -29,7 +30,11 @@ using namespace cv;
 
 bool _inited;
 
-Mat findPerson(Mat mat1) {
+Mat findPerson(Mat mat1, float& deltaX, float& deltaY) {
+
+    deltaX = 0.0;
+    deltaY = 0.0;
+    
     calibrate(mat1);
     
     Mat equalized;
@@ -89,16 +94,18 @@ Mat findPerson(Mat mat1) {
         int matX = rgbMat.cols / 2;
         int matY = rgbMat.rows / 2;
         
-        float deltaX = (float)(x - matX) / rgbMat.cols;
-        float deltaY = -(float)(y - matY) / rgbMat.rows;
+        deltaX = (float)(x - matX) / rgbMat.cols;
+        deltaY = -(float)(y - matY) / rgbMat.rows;
         
+        // fprintf(stderr, "deltaX = %f, deltaY = %f\n", deltaX, deltaY);
         if (fabs(deltaX) < minDeltaX) {
             deltaX = 0;
         }
         if (fabs(deltaY) < minDeltaY) {
             deltaY = 0;
         }
-        
+        // fprintf(stderr, "deltaX = %f, deltaY = %f\n", deltaX, deltaY);
+
         // fprintf(stderr, "%f, %f\n", deltaX, deltaY);
         // [_galileo panBy:deltaY * 180];
         // [_galileo tiltBy:deltaX * 180];

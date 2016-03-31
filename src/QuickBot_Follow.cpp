@@ -45,7 +45,20 @@ int main(int argc, char **argv)
         }
         cv::Mat img = convertData(frame);
         // cv::Mat processed = img.clone();
-        cv::Mat processed = findPerson(img);
+        float deltax, deltay;
+        cv::Mat processed = findPerson(img, deltax, deltay);
+
+        if (deltay == 0.0) {
+            printf("stop\n");
+        } else if (deltax == 0.0) {
+            printf("straight\n");
+        } else if (deltax > 0.0) {
+            printf("right\n");
+        } else {
+            printf("left\n");
+        }
+        
+        // fprintf(stderr, "deltax = %f, deltay = %f\n", deltax, deltay);
         // cv::Mat processed(SCAN_LINES, SCAN_COLUMNS, CV_8UC3, cv::Scalar(255,0,0));
         // fprintf(stderr, "isContinuous = %d\n", processed.isContinuous());
         write(socket_fd, processed.data, SCAN_LINES * SCAN_COLUMNS * 3);
