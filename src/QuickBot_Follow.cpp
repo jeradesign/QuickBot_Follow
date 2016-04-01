@@ -49,13 +49,13 @@ int main(int argc, char **argv)
         cv::Mat processed = findPerson(img, deltax, deltay);
 
         if (deltay == 0.0) {
-            printf("stop\n");
+            printf("stop\n"); fflush(stdout);
         } else if (deltax == 0.0) {
-            printf("straight\n");
+            printf("straight\n"); fflush(stdout);
         } else if (deltax > 0.0) {
-            printf("right\n");
+            printf("right\n"); fflush(stdout);
         } else {
-            printf("left\n");
+            printf("left\n"); fflush(stdout);
         }
         
         // fprintf(stderr, "deltax = %f, deltay = %f\n", deltax, deltay);

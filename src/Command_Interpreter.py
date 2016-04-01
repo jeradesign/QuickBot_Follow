@@ -23,6 +23,6 @@ while True:
         Motor_Driver.move(70, -70, 0.05)
     elif line == "straight":
         print "go straight"
-        Motor_Driver.move(100, 98, .95)
+        Motor_Driver.move(100, 98, 0.095)
     else:
         print "STOP"

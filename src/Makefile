@@ -1,12 +1,15 @@
 # Makefile for Lepton_Data_Sender 
 
-.PHONY: run
+.PHONY: run robot
 
 # run: Lepton_Data_Sender
 # 	./Lepton_Data_Sender $(LEPTON_VISUALIZER_IP)
 
 run: QuickBot_Follow
 	./QuickBot_Follow $(LEPTON_VISUALIZER_IP)
+
+robot: QuickBot_Follow
+	./QuickBot_Follow $(LEPTON_VISUALIZER_IP) | python Command_Interpreter.py
 
 QuickBot_Follow: QuickBot_Follow.cpp Lepton_Driver.cpp Lepton_Driver.h Lepton_Frame.h Person_Finder.cpp OpenCV_Adapter.cpp OpenCV_Adapter.h Calibration.cpp Calibration.h
 	g++ -std=c++0x -o QuickBot_Follow QuickBot_Follow.cpp Lepton_Driver.cpp Person_Finder.cpp OpenCV_Adapter.cpp Calibration.cpp -lopencv_core -lopencv_imgproc -lmraa
