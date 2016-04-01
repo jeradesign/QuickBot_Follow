@@ -52,8 +52,10 @@ def move(leftPercent, rightPercent, duration):
 
 try:
     init_pins()
-    move(-100, -100, 1)
-#    move(-70, 70, 0.05)
+    move(100, 98, 2)
+    move(-70, 70, 0.5)
+    move(100, 98, 2)
+    move(-70, 70, 0.5)
 finally:
     GPIO.cleanup()
 
