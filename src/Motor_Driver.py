@@ -50,12 +50,12 @@ def move(leftPercent, rightPercent, duration):
     PWM.set_duty_cycle("P9_16", 0)
     PWM.set_duty_cycle("P9_14", 0)
 
-try:
-    init_pins()
-    move(100, 98, 2)
-    move(-70, 70, 0.5)
-    move(100, 98, 2)
-    move(-70, 70, 0.5)
-finally:
-    GPIO.cleanup()
-
+if __name__ == '__main__':
+    try:
+        init_pins()
+        move(100, 98, 2)
+        move(-70, 70, 0.5)
+        move(100, 98, 2)
+        move(-70, 70, 0.5)
+    finally:
+        GPIO.cleanup()
