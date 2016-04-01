@@ -2,3 +2,4 @@ Debug/
 *~
 \#*\#
 src/QuickBot_Follow
+*.pyc
