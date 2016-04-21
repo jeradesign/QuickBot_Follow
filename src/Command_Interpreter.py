@@ -6,10 +6,14 @@
 import Motor_Driver
 
 import sys
+from time import sleep
 
 Motor_Driver.init_pins()
 
 print "Ready"
+
+last = ""
+count = 0
 
 while True:
     line = sys.stdin.readline().rstrip()
@@ -17,12 +21,28 @@ while True:
         break;
     if line == "left":
         print "turn left"
-        Motor_Driver.move(-70, 70, 0.05)
-    elif line == "right":
+        if last != "left":
+            count = 10
+            last = "left"
+            continue
+        if count > 0:
+            count = count - 1
+            continue
+        Motor_Driver.move(-90, 88, 0.01)
+    if line == "right":
         print "turn right"
-        Motor_Driver.move(70, -70, 0.05)
-    elif line == "straight":
+        if last != "right":
+            count = 10
+            last = "right"
+            continue
+        if count > 0:
+            count = count - 1
+            continue
+        Motor_Driver.move(90, -88, 0.01)
+    if line == "straight":
         print "go straight"
-        Motor_Driver.move(100, 98, 0.095)
+        last = "straight"
+        Motor_Driver.move(70, 68, 0.05)
     else:
         print "STOP"
+#        last = "STOP"
