@@ -15,8 +15,8 @@
 #include "Person_Finder.h"
 
 static const int morph_size = 3;
-static const float minDeltaX = 0.05;
-static const float minDeltaY = 0.05;
+static const float minDeltaX = 0.1;
+static const float minDeltaY = 0.1;
 
 static const int min_temp = 8000;
 static const int max_temp = 8500;
