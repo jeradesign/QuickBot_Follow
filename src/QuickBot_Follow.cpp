@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         if (deltay == 0.0) {
             printf("stop\n"); fflush(stdout);
         } else if (deltax == 0.0) {
-            printf("straight\n"); fflush(stdout);
+            printf("forward\n"); fflush(stdout);
         } else if (deltax > 0.0) {
             printf("right\n"); fflush(stdout);
         } else {

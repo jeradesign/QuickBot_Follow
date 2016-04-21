@@ -20,7 +20,7 @@ while True:
     if not line:
         break;
     if line == "left":
-        print "turn left"
+        print "left"
         if last != "left":
             count = 10
             last = "left"
@@ -30,7 +30,7 @@ while True:
             continue
         Motor_Driver.move(-90, 88, 0.01)
     if line == "right":
-        print "turn right"
+        print "right"
         if last != "right":
             count = 10
             last = "right"
@@ -39,9 +39,9 @@ while True:
             count = count - 1
             continue
         Motor_Driver.move(90, -88, 0.01)
-    if line == "straight":
-        print "go straight"
-        last = "straight"
+    if line == "forward":
+        print "forward"
+        last = "forward"
         Motor_Driver.move(70, 68, 0.05)
     else:
         print "STOP"
